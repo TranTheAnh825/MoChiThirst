@@ -1,20 +1,43 @@
 package org.moChiThirst.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
-import org.moChiThirst.MoChiThirst;
+import org.bukkit.entity.Player;
+import org.moChiThirst.managers.ConfigManager;
 
-public class SetThirstCommand implements CommandExecutor {
-    MoChiThirst moChiThirst;
-    public SetThirstCommand(MoChiThirst moChiThirst) {this.moChiThirst = moChiThirst;}
+import java.util.ArrayList;
+import java.util.List;
+
+public class SetThirstCommand implements SubCommand {
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public String getName() { return "set"; }
 
+    @Override
+    public String getPermission() { return "mochithirst.set"; }
 
+    @Override
+    public void execute(CommandSender sender, String[] args) {
 
-        return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, String[] args) {
+
+        if (args.length == 2) {
+            List<String> completions = new ArrayList<>();
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                completions.add(player.getName());
+            }
+            return completions;
+        }
+
+        if (args.length == 3) {
+            return List.of("number");
+        }
+
+        return null;
     }
 }

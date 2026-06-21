@@ -1,2 +1,3 @@
-prefix: "&#ffffff-&#777777&l[MoChiMC]"
-reload: "&aĐã reload config trong vòng {time} ms"
+prefix: '&#f8b8c2MoChiThirst &8►'
+reload: '&aReload xong trong vòng &e{time} ms'
+noPerm: '&cBạn không có quyền để thực hiện lệnh này'

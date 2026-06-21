@@ -12,17 +12,17 @@ public class ReloadCommand implements SubCommand {
     public String getName() { return "reload"; }
 
     @Override
-    public String getPermission() { return "MoChiThirst.reload"; }
+    public String getPermission() { return "mochithirst.reload"; }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        String message = ConfigManager.get("messages.yml").getString("reload");
         long start = System.currentTimeMillis();
-
         ConfigManager.reloadAll();
-
         long time = System.currentTimeMillis() - start;
-        sender.sendMessage(Color.translate(message.replace("{time}", String.valueOf(time))));
+
+        String prefix = ConfigManager.getPrefix() + " ";
+        String message = ConfigManager.get("messages").getString("reload");
+        sender.sendMessage(Color.translate(prefix + message.replace("{time}", String.valueOf(time))));
     }
 
     @Override

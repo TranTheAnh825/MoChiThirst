@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.moChiThirst.commands.SubCommand;
+import org.moChiThirst.utils.Color;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,27 +17,17 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     private final JavaPlugin plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private String noPermissionMessage;
+    private String noPermissionMessage = ConfigManager.getNoPermissionMessage();
     private String unknownCommandMessage;
 
     public CommandManager(JavaPlugin plugin, String command) {
         this.plugin = plugin;
-
-        // Thêm null check để debug
-        //if (plugin.getCommand(command) == null) {
-        //    plugin.getLogger().severe("Command '" + command + "' không tìm thấy trong plugin.yml!");
-        //    return;
-        //}
         plugin.getCommand(command).setExecutor(this);
         plugin.getCommand(command).setTabCompleter(this);
     }
 
     public void register(SubCommand subCommand) {
         subCommands.put(subCommand.getName().toLowerCase(), subCommand);
-    }
-
-    public void setNoPermissionMessage(String message) {
-        this.noPermissionMessage = message;
     }
 
     public void setUnknownCommandMessage(String message) {
@@ -59,9 +50,10 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        String prefix = ConfigManager.getPrefix() + " ";
         if (sub.getPermission() != null && !sender.hasPermission(sub.getPermission())) {
             if (noPermissionMessage != null)
-                sender.sendMessage(noPermissionMessage);
+                sender.sendMessage(Color.translate(prefix + noPermissionMessage));
             return true;
         }
 

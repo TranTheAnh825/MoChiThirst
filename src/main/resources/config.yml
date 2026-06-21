@@ -1,7 +1,7 @@
 # Thanh khát tối đa (mặc định = 20)
-thirstMax: 20
+maxThirst: 20
 # Thời gian giảm thanh khát (20 = 1s)
-thirstLost: 600
+lostThirst: 600
 
 # Bắt đầu gây sát thương khi thanh khát ở mức này
 damageStart: 1
@@ -18,8 +18,8 @@ thirstEffect:
     - "slowness 0"
     - "nausea 0"
 
-# Hồi thanh khát từ nguồn nào
 drink:
+  # Hồi thanh khát từ nguồn nào
   water:
     # Hồi lại mức khát
     thirstRecovery: 3
