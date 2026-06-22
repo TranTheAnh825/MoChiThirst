@@ -21,15 +21,14 @@ public class ConfigManager {
 
         register("config",   "config.yml");
         register("messages", "messages.yml");
+        register("data", "data.yml");
         plugin.saveDefaultConfig();
     }
 
     public static void register(String key, String fileName) {
         File file = new File(plugin.getDataFolder(), fileName);
 
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
 
         if (!file.exists()) {
             if (plugin.getResource(fileName) != null) {
@@ -37,9 +36,7 @@ public class ConfigManager {
             } else {
                 try {
                     file.createNewFile();
-                } catch (IOException e) {
-                    plugin.getLogger().severe("Không thể tạo file: " + fileName);
-                }
+                } catch (IOException ignored) {}
             }
         }
 
@@ -82,7 +79,6 @@ public class ConfigManager {
         for (String key : files.keySet()) {
             reload(key);
         }
-        plugin.getLogger().info("Đã reload " + files.size() + " files");
     }
 
     public static String getPrefix() {

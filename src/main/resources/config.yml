@@ -1,14 +1,16 @@
-# Thanh khát tối đa (mặc định = 20)
-maxThirst: 20
-# Thời gian giảm thanh khát (20 = 1s)
-lostThirst: 600
+thirst:
+  # Thanh khát tối đa (mặc định = 20)
+  max: 20
+  # Thời gian giảm thanh khát (20 = 1s)
+  interval: 600
 
-# Bắt đầu gây sát thương khi thanh khát ở mức này
-damageStart: 1
-# Gây sát thương khi khát (1 = nửa tim)
-damageAmount: 1
-# Tần suất gây sát thương khi khát (20 = 1s)
-damageInterval: 100
+damgage:
+  # Bắt đầu gây sát thương khi thanh khát ở mức này
+  start: 0
+  # Gây sát thương khi khát (1 = nửa tim)
+  amount: 1
+  # Tần suất gây sát thương khi khát (20 = 1s)
+  interval: 100
 
 # Hiệu ứng khi bị khát
 thirstEffect:

@@ -2,6 +2,7 @@ package org.moChiThirst.commands;
 
 import org.bukkit.command.CommandSender;
 import org.moChiThirst.managers.ConfigManager;
+import org.moChiThirst.managers.ThirstManager;
 import org.moChiThirst.utils.Color;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class ReloadCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         long start = System.currentTimeMillis();
         ConfigManager.reloadAll();
+        ThirstManager.reload();
         long time = System.currentTimeMillis() - start;
 
         String prefix = ConfigManager.getPrefix() + " ";

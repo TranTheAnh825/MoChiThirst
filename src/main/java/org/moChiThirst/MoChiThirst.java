@@ -3,7 +3,7 @@ package org.moChiThirst;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.moChiThirst.commands.ReloadCommand;
-import org.moChiThirst.commands.SetThirstCommand;
+import org.moChiThirst.commands.ThirstEditCommand;
 import org.moChiThirst.managers.CommandManager;
 import org.moChiThirst.managers.ConfigManager;
 import org.moChiThirst.managers.ThirstManager;
@@ -17,13 +17,11 @@ public final class MoChiThirst extends JavaPlugin {
 
         CommandManager commandManager = new CommandManager(this, "thirst");
         commandManager.register(new ReloadCommand());
-        commandManager.register(new SetThirstCommand());
+        commandManager.register(new ThirstEditCommand());
 
         ThirstManager.reloadUUID();
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) {
-            new ThirstPlaceholder().register();
-        }
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) { new ThirstPlaceholder().register(); }
     }
 
     @Override
