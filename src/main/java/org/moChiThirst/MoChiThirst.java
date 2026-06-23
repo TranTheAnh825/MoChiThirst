@@ -13,6 +13,8 @@ public final class MoChiThirst extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) { new ThirstPlaceholder().register(); }
+
         ConfigManager.setup(this);
 
         CommandManager commandManager = new CommandManager(this, "thirst");
@@ -20,8 +22,6 @@ public final class MoChiThirst extends JavaPlugin {
         commandManager.register(new ThirstEditCommand());
 
         ThirstManager.reloadUUID();
-
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) { new ThirstPlaceholder().register(); }
     }
 
     @Override
