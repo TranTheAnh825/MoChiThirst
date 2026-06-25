@@ -15,7 +15,6 @@ import java.util.UUID;
 import static org.moChiThirst.managers.ThirstManager.*;
 
 public class ThirstEvent implements Listener {
-    private static BukkitTask task;
     private static int        interval = ConfigManager.get("config").getInt("thirst.interval");
     private static int        damage   = ConfigManager.get("config").getInt("damage.amount");
 
@@ -28,7 +27,7 @@ public class ThirstEvent implements Listener {
     }
 
     private void start(Plugin plugin) {
-        task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("thirst.bypass")) continue;
 
@@ -48,9 +47,8 @@ public class ThirstEvent implements Listener {
                     ThirstManager.decreaseThirst(player, 1);
                 }
 
-                //if (thirstMap.get(uuid) <= 0) player.damage(damage);
+                if (thirstMap.get(uuid) <= 0) player.damage(damage);
             }
         },0, interval);
-
     }
 }

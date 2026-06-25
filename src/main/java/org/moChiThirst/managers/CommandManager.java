@@ -18,7 +18,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     private final JavaPlugin plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
     private String noPermissionMessage = ConfigManager.getNoPermissionMessage();
-    private String unknownCommandMessage;
 
     public CommandManager(JavaPlugin plugin, String command) {
         this.plugin = plugin;
@@ -30,25 +29,9 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         subCommands.put(subCommand.getName().toLowerCase(), subCommand);
     }
 
-    public void setUnknownCommandMessage(String message) {
-        this.unknownCommandMessage = message;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) {
-            if (unknownCommandMessage != null)
-                sender.sendMessage(unknownCommandMessage);
-            return true;
-        }
-
         SubCommand sub = subCommands.get(args[0].toLowerCase());
-
-        if (sub == null) {
-            if (unknownCommandMessage != null)
-                sender.sendMessage(unknownCommandMessage);
-            return true;
-        }
 
         String prefix = ConfigManager.getPrefix() + " ";
         if (sub.getPermission() != null && !sender.hasPermission(sub.getPermission())) {

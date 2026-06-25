@@ -10,6 +10,7 @@ import org.moChiThirst.managers.ThirstManager;
 import org.moChiThirst.utils.ThirstPlaceholder;
 
 public final class MoChiThirst extends JavaPlugin {
+    CommandManager commandManager = new CommandManager(this, "thirst");
 
     @Override
     public void onEnable() {
@@ -17,7 +18,6 @@ public final class MoChiThirst extends JavaPlugin {
 
         ConfigManager.setup(this);
 
-        CommandManager commandManager = new CommandManager(this, "thirst");
         commandManager.register(new ReloadCommand());
         commandManager.register(new ThirstEditCommand());
 
@@ -27,5 +27,9 @@ public final class MoChiThirst extends JavaPlugin {
     @Override
     public void onDisable() {
         ConfigManager.saveAll();
+    }
+
+    private void register() {
+
     }
 }
