@@ -70,10 +70,6 @@ public class ThirstManager {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
-
     public ThirstManager(JavaPlugin plugin) {
         this.plugin      = plugin;
         this.logger      = plugin.getLogger();
@@ -81,10 +77,6 @@ public class ThirstManager {
         loadConfig();
         startTimers();
     }
-
-    // -------------------------------------------------------------------------
-    // Config
-    // -------------------------------------------------------------------------
 
     public void loadConfig() {
         FileConfiguration cfg = ConfigManager.get("config");
@@ -95,7 +87,6 @@ public class ThirstManager {
         damageInterval  = cfg.getInt("damage.interval", 100);
         thirstEffectLevel = cfg.getInt("thirstEffect.thirstLevel", 5);
 
-        // Hot biomes
         hotBiomes.clear();
         for (String entry : cfg.getStringList("hotBiome")) {
             String[] parts = entry.trim().split("\\s+");
@@ -109,14 +100,12 @@ public class ThirstManager {
             }
         }
 
-        // Thirst effects
         thirstEffects.clear();
         for (String entry : cfg.getStringList("thirstEffect.effects")) {
             PotionEffect effect = parseSimpleEffect(entry);
             if (effect != null) thirstEffects.add(effect);
         }
 
-        // Drink configs
         waterConfig  = parseDrinkConfig(cfg, "drink.water");
         potionConfig = parseDrinkConfig(cfg, "drink.potion");
     }
@@ -160,18 +149,11 @@ public class ThirstManager {
         loadConfig();
         stopTimers();
         startTimers();
-        // Xóa effect cũ cho toàn bộ player online
         for (Player p : Bukkit.getOnlinePlayers()) removeThirstEffects(p);
     }
 
-    // -------------------------------------------------------------------------
-    // Timers
-    // -------------------------------------------------------------------------
-
     private void startTimers() {
-        // Timer giảm khát — mỗi thirstInterval ticks chạy 1 lần, nhưng check biome multiplier
         thirstTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tickThirst, 0L, 1L);
-        // Timer damage khi thirst = 0
         damageTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tickDamage, 0L, damageInterval);
     }
 
@@ -180,10 +162,6 @@ public class ThirstManager {
         if (damageTask != null && !damageTask.isCancelled()) damageTask.cancel();
     }
 
-    /**
-     * Chạy mỗi tick, nhưng mỗi player có interval riêng tùy biome.
-     * Dùng timeMap để track lần cuối giảm khát (ms).
-     */
     private void tickThirst() {
         long now = System.currentTimeMillis();
 
@@ -194,7 +172,6 @@ public class ThirstManager {
 
             UUID uuid = player.getUniqueId();
 
-            // Default = 0L để lần đầu tiên luôn trigger ngay
             long   last        = timeMap.getOrDefault(uuid, 0L);
             double multiplier  = getBiomeMultiplier(player);
             long   effectiveMs = (long) ((thirstInterval / 20.0) * 1000.0 / multiplier);
@@ -217,18 +194,10 @@ public class ThirstManager {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Biome
-    // -------------------------------------------------------------------------
-
     private double getBiomeMultiplier(Player player) {
         Biome biome = player.getLocation().getBlock().getBiome();
         return hotBiomes.getOrDefault(biome, 1.0);
     }
-
-    // -------------------------------------------------------------------------
-    // Thirst effects
-    // -------------------------------------------------------------------------
 
     private void applyThirstEffects(Player player) {
         if (thirstEffects.isEmpty()) return;
@@ -250,10 +219,6 @@ public class ThirstManager {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Drink
-    // -------------------------------------------------------------------------
-
     public void applyDrink(Player player, DrinkConfig config) {
         increaseThirst(player, config.recovery);
 
@@ -267,10 +232,6 @@ public class ThirstManager {
 
     public DrinkConfig getWaterConfig()  { return waterConfig; }
     public DrinkConfig getPotionConfig() { return potionConfig; }
-
-    // -------------------------------------------------------------------------
-    // Player join / quit
-    // -------------------------------------------------------------------------
 
     public void handleJoin(Player player) {
         UUID       uuid = player.getUniqueId();
@@ -292,10 +253,6 @@ public class ThirstManager {
         thirstMap.remove(uuid);
         timeMap.remove(uuid);
     }
-
-    // -------------------------------------------------------------------------
-    // Persistence
-    // -------------------------------------------------------------------------
 
     private void persist(UUID uuid) {
         dataManager.set(
@@ -324,10 +281,6 @@ public class ThirstManager {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Thirst operations
-    // -------------------------------------------------------------------------
-
     public void increaseThirst(Player player, int amount) {
         thirstMap.put(player.getUniqueId(), Math.min(getCurrentThirst(player) + amount, getMaxThirst(player)));
     }
@@ -339,7 +292,6 @@ public class ThirstManager {
     public void setThirst(Player player, int amount) {
         int clamped = Math.max(0, Math.min(amount, getMaxThirst(player)));
         thirstMap.put(player.getUniqueId(), clamped);
-        // Reset timer để bắt đầu đếm lại từ thời điểm set
         timeMap.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
@@ -347,19 +299,13 @@ public class ThirstManager {
         thirstMap.put(player.getUniqueId(), getMaxThirst(player));
     }
 
-    // -------------------------------------------------------------------------
-    // Getters
-    // -------------------------------------------------------------------------
-
     public int getMaxThirst(Player player) {
         UUID uuid = player.getUniqueId();
 
-        // Override từ lệnh maxset
         if (maxThirstMap.containsKey(uuid)) {
             return maxThirstMap.get(uuid);
         }
 
-        // Override từ permission node (thirst.capacity.<value>)
         int max = defaultMax;
         for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
             if (!info.getValue()) continue;
@@ -376,7 +322,6 @@ public class ThirstManager {
     public void setMaxThirst(Player player, int amount) {
         UUID uuid = player.getUniqueId();
         maxThirstMap.put(uuid, amount);
-        // Clamp current thirst nếu vượt max mới
         int current = getCurrentThirst(player);
         if (current > amount) thirstMap.put(uuid, amount);
     }
@@ -391,13 +336,13 @@ public class ThirstManager {
         return (int) ((getCurrentThirst(player) / (double) max) * 100);
     }
 
-    /** Effective interval tính bằng ms cho player (có tính biome multiplier) — dùng để debug */
+    // debug
     public long getEffectiveIntervalMs(Player player) {
         double multiplier = getBiomeMultiplier(player);
         return (long) ((thirstInterval / 20.0) * 1000.0 / multiplier);
     }
 
-    /** Ms còn lại đến lần giảm khát tiếp theo — dùng để debug */
+    // debug
     public long getTimeUntilNextDecrease(Player player) {
         long last        = timeMap.getOrDefault(player.getUniqueId(), 0L);
         long elapsed     = System.currentTimeMillis() - last;

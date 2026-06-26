@@ -1,8 +1,13 @@
 package org.moChiThirst.commands;
 
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.moChiThirst.managers.ConfigManager;
 import org.moChiThirst.managers.ThirstManager;
 import org.moChiThirst.utils.Color;
@@ -12,6 +17,8 @@ import java.util.List;
 
 public class SetMaxCommand implements SubCommand {
 
+    private static final String CAPACITY_PREFIX = "thirst.capacity.";
+
     private final ThirstManager thirstManager;
 
     public SetMaxCommand(ThirstManager thirstManager) {
@@ -19,18 +26,17 @@ public class SetMaxCommand implements SubCommand {
     }
 
     @Override
-    public String getName() { return "maxset"; }
+    public String getName() { return "setmax"; }
 
     @Override
-    public String getPermission() { return "mochithirst.maxset"; }
+    public String getPermission() { return "mochithirst.setmax"; }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         String prefix = ConfigManager.getPrefix() + " ";
 
-        // /thirst maxset <player> <amount>
         if (args.length < 3) {
-            sender.sendMessage(Color.translate(prefix + "&cCách dùng: /thirst maxset <player> <amount>"));
+            sender.sendMessage(Color.translate(prefix + "&cCách dùng: /thirst setmax <player> <amount>"));
             return;
         }
 
@@ -53,13 +59,40 @@ public class SetMaxCommand implements SubCommand {
             return;
         }
 
-        thirstManager.setMaxThirst(target, amount);
+        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+        if (provider == null) {
+            sender.sendMessage(Color.translate(prefix + "&cLuckPerms không khả dụng!"));
+            return;
+        }
 
-        String msg = ConfigManager.get("messages").getString("maxset",
-                "&aĐã đặt độ khát tối đa của &e{target} &athành &e{amount}");
-        msg = msg.replace("{target}", target.getName())
-                .replace("{amount}", String.valueOf(amount));
-        sender.sendMessage(Color.translate(prefix + msg));
+        LuckPerms luckPerms = provider.getProvider();
+        User      user      = luckPerms.getUserManager().getUser(target.getUniqueId());
+
+        if (user == null) {
+            sender.sendMessage(Color.translate(prefix + "&cKhông thể load dữ liệu LuckPerms của &f" + target.getName()));
+            return;
+        }
+
+        // Xóa tất cả capacity node cũ
+        user.data().clear(node -> node.getKey().startsWith(CAPACITY_PREFIX));
+
+        // Thêm capacity node mới
+        user.data().add(Node.builder(CAPACITY_PREFIX + amount).build());
+
+        luckPerms.getUserManager().saveUser(user).thenRun(() -> {
+            target.recalculatePermissions();
+
+            String msg = ConfigManager.get("messages").getString("maxset",
+                    "&aĐã đặt độ khát tối đa của &e{target} &athành &e{amount}");
+            msg = msg.replace("{target}", target.getName())
+                    .replace("{amount}", String.valueOf(amount));
+
+            final String finalMsg = msg;
+            Bukkit.getScheduler().runTask(
+                    Bukkit.getPluginManager().getPlugin("MoChiThirst"),
+                    () -> sender.sendMessage(Color.translate(prefix + finalMsg))
+            );
+        });
     }
 
     @Override

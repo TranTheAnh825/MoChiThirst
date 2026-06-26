@@ -27,7 +27,6 @@ public class SetCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         String prefix = ConfigManager.getPrefix() + " ";
 
-        // /thirst set <player> <amount>  →  args[0]=set, args[1]=player, args[2]=amount
         if (args.length < 3) {
             sender.sendMessage(Color.translate(prefix + "&cCách dùng: /thirst set <player> <amount>"));
             return;

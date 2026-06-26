@@ -24,22 +24,18 @@ public final class MoChiThirst extends JavaPlugin {
         ConfigManager.setup(this);
         thirstManager = new ThirstManager(this);
 
-        // Register PlaceholderAPI expansion nếu có
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new ThirstPlaceholder(thirstManager).register();
             getLogger().info("PlaceholderAPI expansion đã được đăng ký.");
         }
 
-        // Đăng ký listener
         Bukkit.getPluginManager().registerEvents(new ThirstListener(this, thirstManager), this);
 
-        // Đăng ký commands
         commandManager = new CommandManager(this, "thirst");
         commandManager.register(new ReloadCommand(thirstManager));
         commandManager.register(new SetCommand(thirstManager));
         commandManager.register(new SetMaxCommand(thirstManager));
 
-        // Load dữ liệu cho player đang online (trường hợp reload)
         thirstManager.loadOnlinePlayers();
 
         getLogger().info("MoChiThirst đã được bật!");

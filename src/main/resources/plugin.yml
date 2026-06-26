@@ -7,6 +7,7 @@ authors: [ MoChiMC ]
 
 softdepend:
   - PlaceholderAPI
+  - LuckPerms
 
 commands:
   thirst:
@@ -27,7 +28,7 @@ permissions:
     description: Đặt độ khát của người chơi
     default: op
 
-  mochithirst.maxset:
+  mochithirst.setmax:
     description: Đặt độ khát tối đa của người chơi
     default: op
 

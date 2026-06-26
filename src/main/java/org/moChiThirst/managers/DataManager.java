@@ -33,10 +33,6 @@ public class DataManager {
         load();
     }
 
-    // -------------------------------------------------------------------------
-    // Load / Save
-    // -------------------------------------------------------------------------
-
     public void load() {
         if (!file.exists()) return;
 
@@ -55,10 +51,6 @@ public class DataManager {
             logger.severe("Không thể lưu " + FILE_NAME + ": " + e.getMessage());
         }
     }
-
-    // -------------------------------------------------------------------------
-    // CRUD
-    // -------------------------------------------------------------------------
 
     public void set(UUID uuid, int thirstLevel, long lastUpdated) {
         dataMap.put(uuid, new PlayerData(thirstLevel, lastUpdated));
