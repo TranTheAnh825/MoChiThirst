@@ -10,26 +10,27 @@ import org.moChiThirst.utils.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetCommand implements SubCommand {
+public class SetMaxCommand implements SubCommand {
 
     private final ThirstManager thirstManager;
 
-    public SetCommand(ThirstManager thirstManager) {
+    public SetMaxCommand(ThirstManager thirstManager) {
         this.thirstManager = thirstManager;
     }
 
     @Override
-    public String getName() { return "set"; }
+    public String getName() { return "maxset"; }
+
     @Override
-    public String getPermission() { return "mochithirst.set"; }
+    public String getPermission() { return "mochithirst.maxset"; }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         String prefix = ConfigManager.getPrefix() + " ";
 
-        // /thirst set <player> <amount>  →  args[0]=set, args[1]=player, args[2]=amount
+        // /thirst maxset <player> <amount>
         if (args.length < 3) {
-            sender.sendMessage(Color.translate(prefix + "&cCách dùng: /thirst set <player> <amount>"));
+            sender.sendMessage(Color.translate(prefix + "&cCách dùng: /thirst maxset <player> <amount>"));
             return;
         }
 
@@ -47,16 +48,17 @@ public class SetCommand implements SubCommand {
             return;
         }
 
-        if (amount < 0) {
-            sender.sendMessage(Color.translate(prefix + "&cGiá trị không được âm."));
+        if (amount <= 0) {
+            sender.sendMessage(Color.translate(prefix + "&cGiá trị phải lớn hơn 0."));
             return;
         }
 
-        thirstManager.setThirst(target, amount);
+        thirstManager.setMaxThirst(target, amount);
 
-        String msg = ConfigManager.get("messages").getString("set", "&aĐã chỉnh độ khát của &e{target} &athành &e{amount}");
+        String msg = ConfigManager.get("messages").getString("maxset",
+                "&aĐã đặt độ khát tối đa của &e{target} &athành &e{amount}");
         msg = msg.replace("{target}", target.getName())
-                .replace("{amount}", String.valueOf(thirstManager.getCurrentThirst(target)));
+                .replace("{amount}", String.valueOf(amount));
         sender.sendMessage(Color.translate(prefix + msg));
     }
 
@@ -74,7 +76,7 @@ public class SetCommand implements SubCommand {
         }
 
         if (args.length == 3) {
-            return List.of("1", "5", "10", "20");
+            return List.of("20", "30", "50");
         }
 
         return List.of();

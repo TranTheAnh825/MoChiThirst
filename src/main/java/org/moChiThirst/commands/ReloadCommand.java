@@ -9,6 +9,12 @@ import java.util.List;
 
 public class ReloadCommand implements SubCommand {
 
+    private final ThirstManager thirstManager;
+
+    public ReloadCommand(ThirstManager thirstManager) {
+        this.thirstManager = thirstManager;
+    }
+
     @Override
     public String getName() { return "reload"; }
 
@@ -18,17 +24,19 @@ public class ReloadCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         long start = System.currentTimeMillis();
+
         ConfigManager.reloadAll();
-        ThirstManager.reload();
+        thirstManager.reload();
+
         long time = System.currentTimeMillis() - start;
 
         String prefix = ConfigManager.getPrefix() + " ";
-        String message = ConfigManager.get("messages").getString("reload");
-        sender.sendMessage(Color.translate(prefix + message.replace("{time}", String.valueOf(time))));
+        String template = ConfigManager.get("messages").getString("reload", "&aĐã reload xong trong &f{time}ms&a!");
+        sender.sendMessage(Color.translate(prefix + template.replace("{time}", String.valueOf(time))));
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, String[] args) {
-        return null;
+        return List.of();
     }
 }

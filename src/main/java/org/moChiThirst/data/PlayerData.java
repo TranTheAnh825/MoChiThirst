@@ -2,17 +2,16 @@ package org.moChiThirst.data;
 
 public class PlayerData {
     private int thirstLevel;
-    private double time;
+    private long lastUpdated;
 
-    public PlayerData(int thirstLevel, double time) {
+    public PlayerData(int thirstLevel, long lastUpdated) {
         this.thirstLevel = thirstLevel;
-        this.time = time;
+        this.lastUpdated = lastUpdated;
     }
 
-    // Getters và Setters
     public int getThirstLevel() { return thirstLevel; }
     public void setThirstLevel(int thirstLevel) { this.thirstLevel = thirstLevel; }
 
-    public double getTime() { return time; }
-    public void setTime(double time) { this.time = time; }
+    public long getLastUpdated() { return lastUpdated; }
+    public void setLastUpdated(long lastUpdated) { this.lastUpdated = lastUpdated; }
 }

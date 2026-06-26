@@ -1,6 +1,7 @@
 package org.moChiThirst.commands;
 
 import org.bukkit.command.CommandSender;
+
 import java.util.List;
 
 public interface SubCommand {

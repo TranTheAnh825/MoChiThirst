@@ -1,3 +1,6 @@
-prefix: '&#f8b8c2MoChiThirst &8►'
-reload: '&aReload xong trong vòng &e{time} ms'
-noPerm: '&cBạn không có quyền để thực hiện lệnh này'
+prefix: "&8[&bMoChiThirst&8]"
+
+noPerm: "&cBạn không có quyền thực hiện lệnh này!"
+reload: "&aĐã reload thành công trong &f{time}ms&a!"
+set: "&aĐã chỉnh độ khát của &e{target} &athành &e{amount}"
+maxset: "&aĐã đặt độ khát tối đa của &e{target} &athành &e{amount}"

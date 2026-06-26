@@ -2,35 +2,49 @@ thirst:
   # Thanh khát tối đa (mặc định = 20)
   max: 20
   # Thời gian giảm thanh khát (20 = 1s)
-  interval: 600
+  interval: 1200
 
-damgage:
-  # Bắt đầu gây sát thương khi thanh khát ở mức này
-  start: 0
+damage:
   # Gây sát thương khi khát (1 = nửa tim)
   amount: 1
   # Tần suất gây sát thương khi khát (20 = 1s)
   interval: 100
 
+# Tăng tần suất giảm độ khát ở biome nóng
+# "<BIOME_NAME> <multiplier>"  (2.0 = interval ÷ 2, nhanh gấp đôi)
+hotBiome:
+  - soul_sand_valley 2.0
+  - nether_wastes 2.0
+  - BASALT_DELTAS 2.0
+  - CRIMSON_FOREST 2.0
+  - warped_forest 2.0
+  - DESERT 1.5
+  - BADLANDS 1.2
+  - WOODED_BADLANDS 1.2
+  - SAVANNA 1.2
+
 # Hiệu ứng khi bị khát
 thirstEffect:
-  # Hiệu ứng bắt đầu khi thanh khát ở mức này
+  # Áp dụng hiệu ứng khi thanh khát <= mức này
   thirstLevel: 5
+  # Format: "<effect> <amplifier(0=cấp1)>"
   effects:
-    - "slowness 0"
-    - "nausea 0"
+    - slowness 0
+    - nausea 0
 
+# Hồi thanh khát từ nguồn nào
 drink:
-  # Hồi thanh khát từ nguồn nào
   water:
     # Hồi lại mức khát
-    thirstRecovery: 3
-    # "<tên hiệu ứng> <cấp>(0=1,1=2,...) <hiệu lực>(20=1s) <tỷ lệ>(0.10=10%)"
+    recovery: 3
+    # Format: "<effect> <amplifier> <duration(ticks)> <chance(0.10=10%)>"
     effects:
-      - "poison 0 80 0.25"
-      - "hunger 0 200 0.10"
+      - poison 0 200 0.25
+      - nausea 0 200 0.50
   potion:
-    thirstRecovery: 3
+    rRecovery: 3
     effects:
-      - "poison 0 80 0.25"
-      - "hunger 0 200 0.10"
+      - poison 0 200 0.25
+      - nausea 0 200 0.50
+  milk_bucket:
+    recovery: 5

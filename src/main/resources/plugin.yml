@@ -1,11 +1,40 @@
 name: MoChiThirst
-version: '${version}'
-
+version: ${project.version}
 main: org.moChiThirst.MoChiThirst
-api-version: '1.21'
-load: STARTUP
+api-version: "1.21"
+description: MoChiMC's thirst system
+authors: [ MoChiMC ]
+
+softdepend:
+  - PlaceholderAPI
 
 commands:
   thirst:
-    description: MoChiThirst main command
-    usage: /thirst <args>
+    description: Lệnh quản lý độ khát
+    usage: /thirst <reload|set>
+    permission: mochithirst.use
+
+permissions:
+  mochithirst.use:
+    description: Truy cập lệnh /thirst
+    default: op
+
+  mochithirst.reload:
+    description: Reload plugin
+    default: op
+
+  mochithirst.set:
+    description: Đặt độ khát của người chơi
+    default: op
+
+  mochithirst.maxset:
+    description: Đặt độ khát tối đa của người chơi
+    default: op
+
+  mochithirst.bypass:
+    description: Bỏ qua hệ thống khát
+    default: false
+
+  thirst.capacity.*:
+    description: "Đặt độ khát tối đa qua permission node (vd: thirst.capacity.30)"
+    default: false

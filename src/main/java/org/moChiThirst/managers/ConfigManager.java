@@ -18,17 +18,16 @@ public class ConfigManager {
 
     public static void setup(Plugin p) {
         plugin = p;
-
         register("config",   "config.yml");
         register("messages", "messages.yml");
-        register("data", "data.yml");
-        plugin.saveDefaultConfig();
     }
 
     public static void register(String key, String fileName) {
         File file = new File(plugin.getDataFolder(), fileName);
 
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
 
         if (!file.exists()) {
             if (plugin.getResource(fileName) != null) {
@@ -36,7 +35,9 @@ public class ConfigManager {
             } else {
                 try {
                     file.createNewFile();
-                } catch (IOException ignored) {}
+                } catch (IOException e) {
+                    plugin.getLogger().severe("Không thể tạo file: " + fileName);
+                }
             }
         }
 
@@ -47,7 +48,7 @@ public class ConfigManager {
     public static FileConfiguration get(String key) {
         FileConfiguration config = configs.get(key);
         if (config == null) {
-            throw new IllegalArgumentException("Không tìm thấy : '" + key + "'. Hãy register trước.");
+            throw new IllegalArgumentException("Không tìm thấy config: '" + key + "'. Hãy register trước.");
         }
         return config;
     }
@@ -82,8 +83,11 @@ public class ConfigManager {
     }
 
     public static String getPrefix() {
-        return get("messages").getString("prefix");
+        String prefix = get("messages").getString("prefix");
+        return prefix != null ? prefix : "&8[&bMoChiThirst&8]";
     }
 
-    public static String getNoPermissionMessage() { return get("messages").getString("noPerm"); }
+    public static String getNoPermissionMessage() {
+        return get("messages").getString("noPerm", "&cBạn không có quyền thực hiện lệnh này!");
+    }
 }

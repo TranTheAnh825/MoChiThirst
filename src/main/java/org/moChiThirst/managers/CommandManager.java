@@ -15,12 +15,9 @@ import java.util.Map;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
-    private final JavaPlugin plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private String noPermissionMessage = ConfigManager.getNoPermissionMessage();
 
     public CommandManager(JavaPlugin plugin, String command) {
-        this.plugin = plugin;
         plugin.getCommand(command).setExecutor(this);
         plugin.getCommand(command).setTabCompleter(this);
     }
@@ -31,12 +28,24 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        String prefix = ConfigManager.getPrefix() + " ";
+
+        // Hiện danh sách subcommand nếu không có args
+        if (args.length == 0) {
+            sender.sendMessage(Color.translate(prefix + "&7Các lệnh có sẵn: &f" + String.join(", ", subCommands.keySet())));
+            return true;
+        }
+
         SubCommand sub = subCommands.get(args[0].toLowerCase());
 
-        String prefix = ConfigManager.getPrefix() + " ";
+        if (sub == null) {
+            sender.sendMessage(Color.translate(prefix + "&cLệnh không tồn tại. Dùng /thirst để xem danh sách."));
+            return true;
+        }
+
         if (sub.getPermission() != null && !sender.hasPermission(sub.getPermission())) {
-            if (noPermissionMessage != null)
-                sender.sendMessage(Color.translate(prefix + noPermissionMessage));
+            String noPermMsg = ConfigManager.getNoPermissionMessage();
+            sender.sendMessage(Color.translate(prefix + (noPermMsg != null ? noPermMsg : "&cBạn không có quyền!")));
             return true;
         }
 
@@ -59,7 +68,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
         } else if (args.length > 1) {
             SubCommand sub = subCommands.get(args[0].toLowerCase());
-            if (sub != null) {
+            if (sub != null && (sub.getPermission() == null || sender.hasPermission(sub.getPermission()))) {
                 List<String> subCompletions = sub.onTabComplete(sender, args);
                 if (subCompletions != null) completions.addAll(subCompletions);
             }
